@@ -22,7 +22,6 @@ function App() {
     readOnlyProvider
   );
   const [proposals, setProposals] = useState([]);
-  const [proposalId, setProposalId] = useState([]);
 
   const fetchProposals = useCallback(async () => {
     if (!readOnlyProposalContract) return;
