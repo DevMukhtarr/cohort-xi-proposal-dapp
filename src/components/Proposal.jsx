@@ -1,16 +1,23 @@
 import { Box, Button, Flex, Text } from "@radix-ui/themes";
 import { formatEther } from "ethers";
+import useVote from "../hooks/useVote";
+import useExecute from "../hooks/useExecute";
 
 const Proposal = ({
     description,
     amount,
     minRequiredVote,
-    votecount,
+    voteCount,
     deadline,
     executed,
+    id,
+    canExecute
 }) => {
+    const {vote:handleVote, voteLoading} = useVote();
+    const {execute:handleExecute, canExecuteLoading} = useExecute();
+
     return (
-        <Box className="bg-slate-400 rounded-md shadow-sm p-4 w-96">
+        <Box className="bg-blue-400 rounded-md shadow-sm p-4 w-96">
             <Text className="text-2xl mb-4">Proposals</Text>
             <Box className="w-full">
                 <Flex className="flex gap-4">
@@ -27,7 +34,7 @@ const Proposal = ({
                 </Flex>
                 <Flex className="flex gap-4">
                     <Text>Vote Count:</Text>
-                    <Text className="font-bold">{Number(votecount)}</Text>
+                    <Text className="font-bold">{Number(voteCount)}</Text>
                 </Flex>
                 <Flex className="flex gap-4">
                     <Text>Deadline:</Text>
@@ -40,9 +47,14 @@ const Proposal = ({
                     <Text className="font-bold">{String(executed)}</Text>
                 </Flex>
             </Box>
-            <Button className="bg-blue-500 text-white font-bold w-full mt-4 p-4 rounded-md shadow-sm">
-                Vote
+            {canExecute && !executed ? 
+            <Button className="bg-green-500 text-white font-bold w-full mt-4 p-4 rounded-md shadow-sm" onClick={() => {handleExecute(id)}}>
+            {canExecuteLoading ? 'Loading...' : 'Execute Proposal'}
+            </Button>: executed ? null :
+            <Button className="bg-slate-500 text-white font-bold w-full mt-4 p-4 rounded-md shadow-sm" onClick={() => {handleVote(id)}}>
+            {voteLoading ? 'Loading...' : 'Vote'}
             </Button>
+            }
         </Box>
     );
 };
